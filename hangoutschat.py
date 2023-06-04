@@ -76,9 +76,9 @@ class HangoutsChatBackend(ErrBot):
     def __init__(self, config):
         super().__init__(config)
 
-        self.bot_identifier = HangoutsChatPerson(id='botty',
-                full_name='Botty McBotface',
-                email='botty', space_name='')
+        self.bot_identifier = HangoutsChatPerson(id='wwwbot',
+                full_name='wwwbot save your life',
+                email='wwwbot', space_name='')
 
         self.identity = config.BOT_IDENTITY
         for key in ('project_id', 'subscription_name', 'credentials_path'):
@@ -123,42 +123,52 @@ class HangoutsChatBackend(ErrBot):
         log.info('Listening for messages on {}'.format(self.subscription_path))
 
     def handle_message(self, message):
-        print('Received message: ')
+        print('Received message:')
         log.info('Received message: {}'.format(message.data))
 
-        event_data = json.loads(message.data)
-        space_name = event_data['space']['name']
-        text = event_data['message']['text']
+        try:
+            # Parse the JSON-formatted message
+            event_data = json.loads(message.data)
+            space_name = event_data['space']['name']
+            text = event_data['message']['text']
 
-        # If the bot was added or removed, we don't need to return a response.
-        if event_data['type'] == 'ADDED_TO_SPACE':
-            log.info('Bot added to space {}'.format(space_name))
-            message.ack()
-            return
-        if event_data['type'] == 'REMOVED_FROM_SPACE':
-            log.info('Bot removed rom space {}'.format(space_name))
-            message.ack()
-            return
-        
-        # Check if the space type is ROOM
-        if event_data['space']['type'] == 'ROOM':
-            # Remove @ mentions from the text
-            text = ' '.join(word for word in text.split() if not word.startswith('@'))
+            # If the bot was added or removed, no response is needed
+            if event_data['type'] == 'ADDED_TO_SPACE':
+                log.info('Bot added to space {}'.format(space_name))
+                message.ack()
+                return
+            if event_data['type'] == 'REMOVED_FROM_SPACE':
+                log.info('Bot removed from space {}'.format(space_name))
+                message.ack()
+                return
 
-        # message_instance = self.build_message(event_data['message']['text'])
-        message_instance = self.build_message(text)
+            # Check if the space type is ROOM
+            if event_data['space']['type'] == 'ROOM':
+                # Remove @ mentions from the message
+                text = ' '.join(word for word in text.split() if not word.startswith('@'))
 
-        sender = event_data['message']['sender']
-        message_instance.to = self.bot_identifier
-        message_instance.frm = HangoutsChatPerson(
+            # Create a new message instance
+            message_instance = self.build_message(text)
+
+            sender = event_data['message']['sender']
+            message_instance.to = self.bot_identifier
+            message_instance.frm = HangoutsChatPerson(
                 id=sender['name'],
                 full_name=sender['displayName'],
                 email=sender['email'],
-                space_name=space_name)
+                space_name=space_name
+            )
 
-        log.info("Mesage: {} {}!".format(event_data['message']['text'], message_instance));
-        self.callback_message(message_instance)
-        message.ack()
+            log.info("Message: {} {}".format(text, message_instance))
+            self.callback_message(message_instance)
+            message.ack()
+
+        except json.JSONDecodeError as e:
+            log.info("Error decoding JSON message: {}".format(str(e)))
+            # Handle JSON decoding error, can further process or log error message
+        except Exception as e:
+            log.info("Error handling message: {}".format(str(e)))
+            # Handle other possible errors, can further process or log error message
 
     def send_message(self, msg):
         super().send_message(msg)
