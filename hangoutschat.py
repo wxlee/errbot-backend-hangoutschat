@@ -142,6 +142,12 @@ class HangoutsChatBackend(ErrBot):
                 message.ack()
                 return
 
+            # Check if the text includes '!restart', ack message and do restart.
+            # FIX: restart loop issue
+            if '!restart' in text:
+                log.info('##### Restart command received #####')
+                message.ack()
+
             # Check if the space type is ROOM
             if event_data['space']['type'] == 'ROOM':
                 # Remove @ mentions from the message
@@ -198,6 +204,7 @@ class HangoutsChatBackend(ErrBot):
     def shutdown(self):
         if self.running:
             self.running = False
+            log.info("shutdown now!!!")
             super().shutdown()  # only once (hackish)
 
     def change_presence(self, status: str = ONLINE, message: str = ''):
