@@ -12,20 +12,20 @@ Setup
 
 3. Install the requirements listed in `requirements.txt`.
 
-- If you meet some SSL issue, try it.
+   - If you meet some SSL issue, try it.
 
-```bash
-pip install -U pyOpenSSL cryptography
-```
+   ```bash
+   pip install -U pyOpenSSL cryptography
+   ```
 
 4. In Google Chat, create a bot that will represent ErrBot. If you need help with this step,
    check out [this](https://developers.google.com/hangouts/chat/how-tos/pub-sub) guide on Hangouts Chat bots based on Google Cloud Pub/Sub.
 
-- Setup Google Chat API
+   - Setup Google Chat API
 
-1) Enable API
+   1) Enable API
 
-2) Manage > CONFIGURATION > Connection settings: Cloud Pub/Sub [Set the Topic Name]
+   2) Manage > CONFIGURATION > Connection settings: Cloud Pub/Sub [Set the Topic Name]
 
 
 5. Edit your ErrBot's `config.py`. Use the following template for a minimal configuration:
@@ -56,35 +56,35 @@ pip install -U pyOpenSSL cryptography
 
 6. [Start ErrBot](http://errbot.io/en/latest/user_guide/setup.html#starting-the-daemon).
 
-  - Run as Daemon
+   - Run as Daemon
 
-  ```bash
-  errbot --daemon
-  ```
+   ```bash
+   errbot --daemon
+   ```
 
 7. Debug
 
-  Edit your ErrBot's `config.py`.
+   Edit your ErrBot's `config.py`.
 
-  ```python
-  BOT_LOG_LEVEL = logging.DEBUG
-  ```
+   ```python
+   BOT_LOG_LEVEL = logging.DEBUG
+   ```
 
-  Run it with DEBUG log.
-  ```bash
-  export GOOGLE_APPLICATION_CREDENTIALS='<path/to/your/googleserviceaccount.json>'; errbot
-  ```
+   Run it with DEBUG log.
+   ```bash
+   export GOOGLE_APPLICATION_CREDENTIALS='<path/to/your/googleserviceaccount.json>'; errbot
+   ```
 
 8. How to call bot
 
-  - DM
+   - DM
   
-  ```bash
-  !tryme
-  ```
+   ```bash
+   !tryme
+   ```
 
-  - ROOM
+   - ROOM
   
-  ```bash
-  @bot !tryme
-  ```
+   ```bash
+   @bot !tryme
+   ```
